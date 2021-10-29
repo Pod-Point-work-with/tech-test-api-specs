@@ -1,0 +1,41 @@
+title: Unit
+type: object
+description: The Unit is the physical system which can charge an electric vehicle.
+x-examples:
+  Pod Point Office:
+    value:
+      id: 1
+      name: Pod Point Office
+      address: 'Discovery House, 28–42 Banner Street'
+      postcode: EC1Y 8QE
+      status: available
+      charges:
+        - id: 1
+          started_at: '2020-11-01T13:35:20+00:00'
+          finished_at: '2020-11-01T18:51:42+00:00'
+        - id: 2
+          started_at: '2020-11-02T10:42:51+00:00'
+          finished_at: '2020-11-02T15:20:35+00:00'
+properties:
+  id:
+    type: integer
+    x-faker: random.number
+  name:
+    type: string
+    x-faker: company.companyName
+  address:
+    type: string
+    x-faker: address.streetName
+  postcode:
+    type: string
+    x-faker: address.zipCode
+  status:
+    type: string
+    enum:
+      - available
+      - charging
+    description: Unit status
+  charges:
+    type: array
+    items:
+      $ref: ./charge.v1.yaml

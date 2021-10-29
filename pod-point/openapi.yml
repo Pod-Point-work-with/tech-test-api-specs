@@ -1,0 +1,366 @@
+openapi: 3.0.0
+info:
+  title: Pod Point Coding Test API
+  description: An API to interact with Pod Point Units for our Coding Tests.
+  contact:
+    email: software@pod-point.com
+    url: 'https://pod-point.com'
+    name: Software Team
+  version: 1.0.0
+  license:
+    name: UNLICENSED
+tags:
+  - name: Units
+    description: Handles the unit resource.
+  - name: Charges
+    description: Handles the charge resource.
+paths:
+  /units:
+    get:
+      operationId: units.index
+      tags: []
+      summary: Lists all Units
+      description: 'Lists all Units, without pagination, in no particular order, including charges.'
+      responses:
+        '200':
+          description: The list of units is successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: ./models/unit.v1.yaml
+              examples:
+                design:
+                  value:
+                    data:
+                      - id: 1
+                        name: Pod Point Office
+                        address: 'Discovery House, 28–42 Banner Street'
+                        postcode: EC1Y 8QE
+                        status: available
+                        charges:
+                          - id: 58470
+                            started_at: '2000-02-14T00:38:43+00:00'
+                            finished_at: '1945-11-10T11:01:43+00:00'
+                          - id: 49478
+                            started_at: '1965-04-19T19:23:03+00:00'
+                            finished_at: '1999-04-02T22:01:19+00:00'
+                          - id: 48100
+                            started_at: '1961-01-04T04:22:07+00:00'
+                            finished_at: '1997-03-20T12:33:12+00:00'
+                      - id: 2
+                        name: Horseferry Road
+                        address: Horseferry Road
+                        postcode: SW1P 2AF
+                        status: available
+                        charges: []
+                      - id: 3
+                        name: Tesco Kensington
+                        address: West Cromwell Road
+                        postcode: W14 8P8
+                        status: available
+                        charges:
+                          - id: 40440
+                            started_at: '2016-06-14T13:16:45+00:00'
+                            finished_at: '1940-12-02T18:03:00+00:00'
+                          - id: 52789
+                            started_at: '2014-11-04T08:35:40+00:00'
+                            finished_at: '1994-04-13T17:36:43+00:00'
+                      - id: 4
+                        name: Putney Exchange Shopping Center
+                        address: Putney High St
+                        postcode: SW15 1TW
+                        status: charging
+                        charges:
+                          - id: 11936
+                            started_at: '2000-07-20T07:12:30+00:00'
+                            finished_at: null
+                      - id: 5
+                        name: University of Bath (East Car Park)
+                        address: Claverton Down
+                        postcode: BA 7PJ
+                        status: charging
+                        charges:
+                          - id: 11936
+                            started_at: '2012-07-20T07:12:30+00:00'
+                            finished_at: null
+                          - id: 11936
+                            started_at: '2012-07-02T07:12:30+00:00'
+                            finished_at: '2012-07-02T07:12:30+00:00'
+      parameters: []
+  '/units/{unitId}':
+    parameters:
+      - schema:
+          type: integer
+        name: unitId
+        in: path
+        required: true
+        description: Identifier of the Unit
+    get:
+      summary: Retrieve Unit details
+      tags: []
+      responses:
+        '200':
+          description: The unit details are successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: ./models/unit.v1.yaml
+              examples:
+                design:
+                  value:
+                    data:
+                      id: 1
+                      name: Pod Point Office
+                      address: 'Discovery House, 28–42 Banner Street'
+                      postcode: EC1Y 8QE
+                      status: available
+                      charges:
+                        - id: 58470
+                          started_at: '2000-02-14T00:38:43+00:00'
+                          finished_at: '1945-11-10T11:01:43+00:00'
+                        - id: 49478
+                          started_at: '1965-04-19T19:23:03+00:00'
+                          finished_at: '1999-04-02T22:01:19+00:00'
+                        - id: 48100
+                          started_at: '1961-01-04T04:22:07+00:00'
+                          finished_at: '1997-03-20T12:33:12+00:00'
+        '404':
+          description: Unit couldn't be found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+              examples:
+                not-found:
+                  value:
+                    message: 'No query results for model [App\Models\Unit] 42'
+      operationId: get-units-unitId
+      description: Gets details of a Unit along with its charging history.
+      parameters: []
+  '/units/{unitId}/charges':
+    parameters:
+      - schema:
+          type: integer
+        name: unitId
+        in: path
+        required: true
+        description: Identifier of the Unit
+    post:
+      summary: Start charging
+      operationId: post-units-unitId
+      responses:
+        '201':
+          description: The charge has successfully started.
+          headers:
+            X-Entity-ID:
+              schema:
+                type: integer
+              description: The fresh identifier generated for the added entity.
+              required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: ./models/unit.v1.yaml
+              examples:
+                design:
+                  value:
+                    data:
+                      id: 1
+                      name: Pod Point Office
+                      address: 'Discovery House, 28–42 Banner Street'
+                      postcode: EC1Y 8QE
+                      status: available
+                      charges:
+                        - id: 58470
+                          started_at: '2000-02-14T00:38:43+00:00'
+                          finished_at: null
+                        - id: 49478
+                          started_at: '1965-04-19T19:23:03+00:00'
+                          finished_at: '1999-04-02T22:01:19+00:00'
+                        - id: 48100
+                          started_at: '1961-01-04T04:22:07+00:00'
+                          finished_at: '1997-03-20T12:33:12+00:00'
+        '404':
+          description: Unit couldn't be found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+              examples:
+                not-found:
+                  value:
+                    message: 'No query results for model [App\Models\Unit] 42'
+        '422':
+          description: Unprocessable Entity (validation failed)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        started_at:
+                          type: array
+                          items:
+                            type: string
+                required:
+                  - errors
+              examples:
+                validation-failed:
+                  value:
+                    errors:
+                      started_at:
+                        - The date and time the charge started at is required.
+      description: Create a charge against a given unit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                started_at:
+                  type: string
+                  description: Start date and time of a Charge for a particular Unit in a ISO 8601 ATOM format.
+              required:
+                - started_at
+            examples:
+              Example:
+                value:
+                  started_at: '2020-06-12T14:35:36+00:00'
+      tags: []
+  '/units/{unitId}/charges/{chargeId}':
+    parameters:
+      - schema:
+          type: integer
+        name: unitId
+        in: path
+        required: true
+        description: Identifier of the Unit
+      - schema:
+          type: integer
+        name: chargeId
+        in: path
+        required: true
+        description: Identifier of the Charge
+    patch:
+      summary: Stop charging
+      operationId: patch-units-unitId-charges-chargeId
+      responses:
+        '200':
+          description: Charge stopped successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: ./models/unit.v1.yaml
+              examples:
+                design:
+                  value:
+                    data:
+                      id: 1
+                      name: Pod Point Office
+                      address: 'Discovery House, 28–42 Banner Street'
+                      postcode: EC1Y 8QE
+                      status: available
+                      charges:
+                        - id: 58470
+                          started_at: '2000-02-14T00:38:43+00:00'
+                          finished_at: '1945-11-10T11:01:43+00:00'
+                        - id: 49478
+                          started_at: '1965-04-19T19:23:03+00:00'
+                          finished_at: '1999-04-02T22:01:19+00:00'
+                        - id: 48100
+                          started_at: '1961-01-04T04:22:07+00:00'
+                          finished_at: '1997-03-20T12:33:12+00:00'
+        '404':
+          description: The Unit or Charge couldn't be found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+              examples:
+                Unit not found:
+                  value:
+                    message: 'No query results for model [App\Models\Unit] 42'
+                Charge not found:
+                  value:
+                    message: 'No query results for model [App\Models\Charge] 42'
+        '422':
+          description: Unprocessable Entity (validation failed)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        finished_at:
+                          type: array
+                          items:
+                            type: string
+                required:
+                  - errors
+              examples:
+                Validation failed:
+                  value:
+                    errors:
+                      finished_at:
+                        - The date and time the charge finished at is required.
+      description: Stop a specific charge for a given unit.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                finished_at:
+                  type: string
+                  description: End date and time of a Charge for a particular Unit in a ISO 8601 ATOM format.
+              required:
+                - finished_at
+            examples:
+              stop-charge:
+                value:
+                  finished_at: '2020-06-12T18:53:05+00:00'
+        description: Charge properties that needs to be updated.
+      tags: []
+components:
+  schemas: {}
+  securitySchemes: {}
+servers:
+  - url: 'http://localhost:8000/api'
+    description: Docker Localhost
