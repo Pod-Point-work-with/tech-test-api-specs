@@ -16,7 +16,7 @@ If you're an applicant and landed here, you shouldn't need to worry about pullin
 
 You can use [Stoplight Studio](https://stoplight.io/studio) in order to browse the API documentation within the `/reference` folder you just created by cloning this repository:
 
-![Open Existing Folder](../docs/stoplight-open-folder.png)
+![Open Existing Folder](docs/stoplight-open-folder.png)
 
 You can also import the Open API v3 file located under `/reference/pod-point/openapi.yml` into [Postman](https://www.postman.com/downloads/) in order to automatically [create a Collection](https://learning.postman.com/docs/postman/collections/importing-and-exporting-data/#collections). Once imported, make sure your Collection variables (mainly `baseUrl`) are accurate.
 
